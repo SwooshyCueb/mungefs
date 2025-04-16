@@ -38,7 +38,15 @@ TODO
 #]=======================================================================]
 
 cmake_policy(PUSH)
-cmake_policy(SET CMP0054 NEW) # Only interpret if() arguments as variables or keywords when unquoted
+cmake_minimum_required(VERSION 3.12...3.18 FATAL_ERROR)
+if (POLICY CMP0125)
+	# Consistent behavior for cache variables managed by find_*()
+	cmake_policy(SET CMP0125 NEW)
+endif()
+if (POLICY CMP0132)
+	# Consistent handling of compiler environment variables
+	cmake_policy(SET CMP0132 NEW)
+endif()
 
 find_path(AVROCPP_INCLUDE_DIR NAMES avro/AvroParse.hh)
 find_library(AVROCPP_LIBRARY NAMES avrocpp libavrocpp)
@@ -46,7 +54,7 @@ find_program(AVROCPP_AVROGEN_EXECUTABLE NAMES avrogencpp)
 
 include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(AvroCpp
-	REQUIRED_VARS AVROCPP_INCLUDE_DIR AVROCPP_LIBRARY AVROCPP_AVROGEN_EXECUTABLE)
+	REQUIRED_VARS AVROCPP_LIBRARY AVROCPP_INCLUDE_DIR AVROCPP_AVROGEN_EXECUTABLE)
 
 if (AvroCpp_FOUND)
 	if (NOT TARGET Avro::AvroCpp)

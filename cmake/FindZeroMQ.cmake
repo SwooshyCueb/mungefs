@@ -32,14 +32,22 @@ TODO
 #]=======================================================================]
 
 cmake_policy(PUSH)
-cmake_policy(SET CMP0054 NEW) # Only interpret if() arguments as variables or keywords when unquoted
+cmake_minimum_required(VERSION 3.12...3.18 FATAL_ERROR)
+if (POLICY CMP0125)
+	# Consistent behavior for cache variables managed by find_*()
+	cmake_policy(SET CMP0125 NEW)
+endif()
+if (POLICY CMP0132)
+	# Consistent handling of compiler environment variables
+	cmake_policy(SET CMP0132 NEW)
+endif()
 
 find_path(ZeroMQ_INCLUDE_DIR NAMES zmq.h)
 find_library(ZeroMQ_LIBRARY NAMES zmq)
 
 include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(ZeroMQ
-	REQUIRED_VARS ZeroMQ_INCLUDE_DIR ZeroMQ_LIBRARY)
+	REQUIRED_VARS ZeroMQ_LIBRARY ZeroMQ_INCLUDE_DIR)
 
 if (ZeroMQ_FOUND)
 	if (NOT TARGET ZeroMQ::libzmq)

@@ -1,4 +1,32 @@
-cmake_minimum_required(VERSION 3.5.0 FATAL_ERROR) #CPACK_DEBIAN_<COMPONENT>_PACKAGE_NAME
+cmake_minimum_required(VERSION 3.12...3.18 FATAL_ERROR)
+if (POLICY CMP0109)
+  # find_program requires permission to execute but not to read
+  cmake_policy(SET CMP0109 NEW)
+endif()
+if (POLICY CMP0121)
+  # Detect invalid indices in list()
+  cmake_policy(SET CMP0121 NEW)
+endif()
+if (POLICY CMP0125)
+  # Consistent behavior for cache variables managed by find_*()
+  cmake_policy(SET CMP0125 NEW)
+endif()
+if (POLICY CMP0130)
+  # Diagnose condition evaluation errors in while()
+  cmake_policy(SET CMP0130 NEW)
+endif()
+if (POLICY CMP0132)
+  # Consistent handling of compiler environment variables
+  cmake_policy(SET CMP0132 NEW)
+endif()
+if (POLICY CMP0140)
+  # Check validity of return() params
+  cmake_policy(SET CMP0140 NEW)
+endif()
+if (POLICY CMP0167)
+  # Bypass FindBoost module
+  cmake_policy(SET CMP0167 NEW)
+endif()
 
 list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -36,7 +64,7 @@ find_package(Boost REQUIRED
   COMPONENTS system filesystem program_options)
 
 find_package(LibArchive REQUIRED)
-find_package(FUSE 2.6 REQUIRED)
+find_package(FUSE 2.9 REQUIRED)
 find_package(AvroCpp REQUIRED)
 find_package(cppzmq REQUIRED)
 
@@ -50,7 +78,7 @@ add_executable(
 target_link_libraries(
   mungefs
   PRIVATE
-  ${FUSE_LIBRARIES}
+  FUSE::FUSE
   cppzmq::cppzmq
   Avro::AvroCpp
   Boost::system
@@ -62,7 +90,6 @@ target_include_directories(
   mungefs
   PRIVATE
   "${CMAKE_CURRENT_BINARY_DIR}/include"
-  ${FUSE_INCLUDE_DIRS}
   )
 
 target_compile_definitions(mungefs PRIVATE ${MUNGEFS_COMPILE_DEFINITIONS})
@@ -77,7 +104,7 @@ add_executable(
 target_link_libraries(
   mungefsctl
   PRIVATE
-  ${FUSE_LIBRARIES}
+  FUSE::FUSE
   cppzmq::cppzmq
   Avro::AvroCpp
   Boost::system

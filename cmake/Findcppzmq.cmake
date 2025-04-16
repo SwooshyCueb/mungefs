@@ -30,7 +30,15 @@ TODO
 #]=======================================================================]
 
 cmake_policy(PUSH)
-cmake_policy(SET CMP0054 NEW) # Only interpret if() arguments as variables or keywords when unquoted
+cmake_minimum_required(VERSION 3.12...3.18 FATAL_ERROR)
+if (POLICY CMP0125)
+	# Consistent behavior for cache variables managed by find_*()
+	cmake_policy(SET CMP0125 NEW)
+endif()
+if (POLICY CMP0132)
+	# Consistent handling of compiler environment variables
+	cmake_policy(SET CMP0132 NEW)
+endif()
 
 unset(_cppzmq_ZeroMQ_REQUIRED)
 if (cppzmq_FIND_REQUIRED)
